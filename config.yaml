@@ -1,0 +1,6 @@
+# GitHub API token for higher rate limits
+github_api_key: "" # Optional: Add your GitHub API key here
+
+# Server configuration
+server:
+  port: "9090" # Change the port number if needed
