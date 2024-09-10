@@ -15,6 +15,7 @@ The app is built using Go (Gin) for the backend, HTML, CSS, and JavaScript for t
 - [Running the App](#running-the-app)
   - [Start the Server](#start-the-server)
   - [Access the Web Interace](#access-the-web-interace)
+- [Using Docker](#using-docker)
 - [Project Structure](#project-structure)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -28,21 +29,23 @@ The app is built using Go (Gin) for the backend, HTML, CSS, and JavaScript for t
 - Data is fetched from the GitHub Search API.
 - Repository details include name, description, star count, and programming language.
 - Repository names link to the actual GitHub repository.
+- Docker integration for easy setup and deployment.
 
 ## Technologies
 
-- *Backend*: Go (Gin framework)
-- *Frontend*: HTML, CSS, JavaScript
-- *API*: GitHub REST API v3
-- *Database*: None (data fetched directly from GitHub API)
-- *Dependencies*: `github.com/gin-gonic/gin` for the web server.
+- **Backend**: Go (Gin framework)
+- **Frontend**: HTML, CSS, JavaScript
+- **API**: GitHub REST API v3
+- **Containerization**: Docker (multi-stage build)
+- **Dependencies**: `github.com/gin-gonic/gin` for the web server.
 
 ## Installation
 
 ### Prerequisites
 
-- Go (1.23.1 current)
-- GitHub API Token
+- [Go](https://golang.org/dl/) (1.20 or higher)
+- [Docker](https://www.docker.com/)
+- GitHub API Token (optional for higher rate limits)
 
 ### Clone the Repository
 
@@ -79,6 +82,31 @@ Open a browser and go to:
 http://localhost:9090
 ```
 
+## Using Docker
+
+You can run the application in a Docker container using the provided Dockerfile. The Dockerfile is set up with a multi-stage build to create a lightweight and efficient Docker image.
+
+### Build the Docker Image
+
+1. Make sure you are in the root directory of the project.
+2. Build the Docker image using the following command:
+
+```bash
+docker build -t github-trends .
+```
+
+This command uses the multi-stage Dockerfile to compile the Go application and create a small, production-ready Docker image.
+
+### Run the Docker Container
+
+Once the Docker image is built, you can run the application in a Docker container:
+
+```bash
+docker run -p 9090:9090 github-trends
+```
+
+This command maps port 9090 on your local machine to port 9090 in the Docker container. The application will be accessible at `http://localhost:9090`
+
 ## Project Structure
 
 ```bash
@@ -90,7 +118,7 @@ github-trends/
 │   ├── api/
 │   │   └── api.go          # API routes and Gin server setup
 │   ├── config/
-│   │   └── config.go             # Configuration loader (using Viper)
+│   │   └── config.go       # Configuration loader (using Viper)
 │   ├── fetcher/
 │   │   └── fetcher.go      # Logic to fetch GitHub repositories
 ├── web/
@@ -103,6 +131,7 @@ github-trends/
 │       │   └── script.js   # JavaScript logic for fetching and displaying repos
 ├── go.mod                  # Go module dependencies
 ├── go.sum                  # Go module checksum file
+├── Dockerfile              # Dockerfile with multi-stage build
 └── config.yaml             # Optional config file for GitHub API key
 ```
 
