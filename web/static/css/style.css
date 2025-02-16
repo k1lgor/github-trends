@@ -40,14 +40,17 @@ body {
 
 .container {
   max-width: 800px;
-  margin: 50px auto;
+  margin: 0 auto;
   padding: 20px;
+  position: relative;
+  min-height: calc(100vh - 100px); /* Account for footer height */
+  display: flex;
+  flex-direction: column;
   backdrop-filter: blur(8px);
   background-color: rgba(var(--bg-primary-rgb), 0.8);
   border-radius: 6px;
   border: 1px solid var(--border-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
-  position: relative;
   overflow: visible;
 }
 
@@ -123,6 +126,7 @@ button:hover {
 }
 
 #repositories {
+  flex: 1;
   margin-top: 20px;
   position: relative;
   overflow: visible;
@@ -411,15 +415,15 @@ body {
     opacity: 0.1;
   }
   25% {
-    transform: translate(100vw, 50vh) rotate(90deg);
+    transform: translate(100vw, 25vh) rotate(90deg);
     opacity: 0.2;
   }
   50% {
-    transform: translate(50vw, 100vh) rotate(180deg);
+    transform: translate(50vw, 50vh) rotate(180deg);
     opacity: 0.1;
   }
   75% {
-    transform: translate(-50vw, 50vh) rotate(270deg);
+    transform: translate(-50vw, 25vh) rotate(270deg);
     opacity: 0.2;
   }
   100% {
@@ -436,17 +440,17 @@ body {
   pointer-events: none;
   z-index: -1;
   opacity: 0.2;
-  animation: float 30s ease-in-out infinite; /* Increased duration for smoother movement */
+  animation: float 20s ease-in-out infinite; /* Increased duration for smoother movement */
 }
 
 .octocat:nth-child(2) {
-  animation-delay: -10s;
-  animation-duration: 35s;
+  animation-delay: -5s;
+  animation-duration: 25s;
 }
 
 .octocat:nth-child(3) {
-  animation-delay: -20s;
-  animation-duration: 40s;
+  animation-delay: -10s;
+  animation-duration: 30s;
 }
 
 [data-theme="dark"] .octocat {
@@ -485,4 +489,45 @@ body {
   background-color: var(--bg-secondary);
   transition: all 0.3s ease;
   font-size: 12px;
+}
+
+/* Updated footer styles */
+.footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 14px;
+  width: 100%;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 800px; /* Match container width */
+}
+
+.footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto;
+}
+
+.footer a {
+  color: var(--link-color);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+
+.footer a:hover {
+  color: var(--text-primary);
+}
+
+.footer svg {
+  width: 20px;
+  height: 20px;
 }
