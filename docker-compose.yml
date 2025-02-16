@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: github-trends:prod
+    container_name: github-trends
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    environment:
+      - GIN_MODE=release
+      - ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

@@ -1,30 +1,53 @@
 # Stage 1: Build the Go binary
-FROM golang:1.23-alpine AS builder
+FROM golang:1.21-alpine AS builder
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy go.mod and go.sum to download dependencies
+# Install necessary build tools
+RUN apk add --no-cache git
+
+# Copy go mod files first to leverage Docker cache
 COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy the rest of the project files
 COPY . .
 
-# Build the Go application (specify the output binary)
-RUN go build -o github-trends cmd/github-trends/main.go
+# Build the application with production settings
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o github-trends cmd/github-trends/main.go
 
-# Stage 2: Create a small image to run the compiled binary
+# Stage 2: Create a minimal production image
 FROM alpine:latest
 
-# Set the working directory in the new container
+# Add necessary certificates and security updates
+RUN apk --no-cache add ca-certificates && \
+    apk --no-cache add tzdata && \
+    update-ca-certificates
+
+# Create a non-root user
+RUN adduser -D -H -h /app appuser
+
 WORKDIR /app
 
-# Copy the binary from the build stage
-COPY --from=builder /app/github-trends /app/github-trends
+# Copy the binary from builder
+COPY --from=builder /app/github-trends .
 
-# Expose the port that the application will run on
+# Copy web assets and config
+COPY --from=builder /app/web ./web
+COPY --from=builder /app/config.yaml .
+
+# Set proper permissions
+RUN chown -R appuser:appuser /app
+
+# Use non-root user
+USER appuser
+
+# Set production environment
+ENV GIN_MODE=release
+ENV ENV=production
+
+# Expose the application port
 EXPOSE 9090
 
 # Run the binary
-CMD ["/app/github-trends"]
+CMD ["./github-trends"]
