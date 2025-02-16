@@ -1,11 +1,11 @@
 package api
 
 import (
+	"github-trends/internal/config"
+	"github-trends/internal/fetcher"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/k1lgor/github-trends/internal/config"
-	"github.com/k1lgor/github-trends/internal/fetcher"
 )
 
 func SetupRouter(cfg *config.Config) *gin.Engine {
@@ -39,6 +39,9 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 
 		c.JSON(200, repos)
 	})
+
+	// Add health check endpoint
+	router.GET("/health", HealthCheck)
 
 	return router
 }
