@@ -47,6 +47,8 @@ body {
   border-radius: 6px;
   border: 1px solid var(--border-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: visible;
 }
 
 /* Theme Toggle Button */
@@ -122,20 +124,171 @@ button:hover {
 
 #repositories {
   margin-top: 20px;
+  position: relative;
+  overflow: visible;
 }
 
 .repository {
+  position: relative;
   background-color: var(--bg-primary);
   padding: 16px;
   border-radius: 6px;
   border: 1px solid var(--border-color);
   margin-bottom: 16px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
+  z-index: 1;
 }
 
 .repository:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   box-shadow: var(--card-shadow);
+  border-color: var(--link-color);
+  z-index: 100;
+}
+
+.repo-preview {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 0;
+  width: 300px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: var(--card-shadow);
+  padding: 16px;
+  z-index: 101;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.repository:hover .repo-preview {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.preview-loading {
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 10px 0;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.preview-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.preview-description {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  margin: 8px 0;
+  max-height: 80px;
+  overflow: hidden;
+}
+
+.preview-stats {
+  display: flex;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border-color);
+  margin-top: 12px;
+}
+
+.preview-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.repo-preview.preview-left {
+  left: auto;
+  right: calc(100% + 10px);
+  transform: translateX(10px);
+}
+
+.repository:hover .repo-preview.preview-left {
+  transform: translateX(0);
+}
+
+.repository::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.03) 30%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.03) 70%,
+    transparent 100%
+  );
+  transform: rotate(45deg);
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.repository:hover::after {
+  opacity: 1;
+  animation: shine 1.5s ease-out;
+}
+
+.repository .language {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.repository .stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background-color: var(--bg-secondary);
+  transition: all 0.3s ease;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+[data-theme="dark"] .repository::after {
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.01) 30%,
+    rgba(255, 255, 255, 0.02) 50%,
+    rgba(255, 255, 255, 0.01) 70%,
+    transparent 100%
+  );
 }
 
 .repository h3 {
@@ -298,4 +451,38 @@ body {
 
 [data-theme="dark"] .octocat {
   filter: invert(1);
+}
+
+/* Update language indicator styles */
+.repo-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.language {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.language-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background-color: var(--bg-secondary);
+  transition: all 0.3s ease;
+  font-size: 12px;
 }
