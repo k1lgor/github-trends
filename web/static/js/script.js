@@ -1,4 +1,19 @@
-document.getElementById("fetch-btn").addEventListener("click", function () {
+// Initialize date elements with current date
+function initializeDateFields() {
+  const now = new Date();
+  const yearInput = document.getElementById("year");
+  const monthSelect = document.getElementById("month");
+
+  // Set current year
+  yearInput.value = now.getFullYear();
+
+  // Set current month (adding 1 because getMonth() returns 0-11)
+  const currentMonth = (now.getMonth() + 1).toString().padStart(2, "0");
+  monthSelect.value = currentMonth;
+}
+
+// Fetch and display repositories
+async function fetchRepositories() {
   const year = document.getElementById("year").value;
   const month = document.getElementById("month").value;
   const repositoriesDiv = document.getElementById("repositories");
@@ -13,37 +28,56 @@ document.getElementById("fetch-btn").addEventListener("click", function () {
     return;
   }
 
-  // Fetch repositories from the backend
-  fetch(`/api/repositories?year=${year}&month=${month}`)
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.error) {
-        repositoriesDiv.innerHTML = `<p class="error-message">Error: ${data.error}</p>`;
-        return;
-      }
+  try {
+    const response = await fetch(
+      `/api/repositories?year=${year}&month=${month}`
+    );
+    const data = await response.json();
 
-      // Display the list of repositories
-      data.forEach((repo) => {
-        const repoElement = document.createElement("div");
-        repoElement.classList.add("repository");
+    if (data.error) {
+      repositoriesDiv.innerHTML = `<p class="error-message">Error: ${data.error}</p>`;
+      return;
+    }
 
-        // Create a clickable link for the repo full_name
-        const repoLink = `<h3><a href="https://github.com/${repo.full_name}" target="_blank">${repo.full_name}</a></h3>`;
+    // Display the list of repositories
+    data.forEach((repo) => {
+      const repoElement = document.createElement("div");
+      repoElement.classList.add("repository");
 
-        // Display the repository information
-        repoElement.innerHTML = `
-                    ${repoLink}
-                    <p>${repo.description || "No description available"}</p>
-                    <p><strong>Stars:</strong> ${
-                      repo.stargazers_count || "N/A"
-                    }</p>
-                    <p><strong>Language:</strong> ${repo.language || "N/A"}</p>
-                `;
-        repositoriesDiv.appendChild(repoElement);
-      });
-    })
-    .catch((error) => {
-      repositoriesDiv.innerHTML =
-        '<p class="error-message">Error fetching repositories. Please try again later.</p>';
+      repoElement.innerHTML = `
+                <h3><a href="https://github.com/${
+                  repo.full_name
+                }" target="_blank">${repo.full_name}</a></h3>
+                <p>${repo.description || "No description available"}</p>
+                <p><strong>Stars:</strong> ${repo.stars || "N/A"}</p>
+                <p><strong>Language:</strong> ${repo.language || "N/A"}</p>
+            `;
+      repositoriesDiv.appendChild(repoElement);
     });
-});
+  } catch (error) {
+    repositoriesDiv.innerHTML =
+      '<p class="error-message">Error fetching repositories. Please try again later.</p>';
+    console.error("Fetch error:", error);
+  }
+}
+
+// Initialize everything when the page loads
+function initialize() {
+  // Set current date fields
+  initializeDateFields();
+
+  // Add click event listener
+  document
+    .getElementById("fetch-btn")
+    .addEventListener("click", fetchRepositories);
+
+  // Fetch repositories immediately
+  fetchRepositories();
+}
+
+// Start everything when the page is ready
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initialize);
+} else {
+  initialize();
+}
