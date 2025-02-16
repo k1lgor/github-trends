@@ -8,6 +8,7 @@
   --btn-primary: #2da44e;
   --btn-hover: #2c974b;
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --bg-primary-rgb: 255, 255, 255;
 }
 
 [data-theme="dark"] {
@@ -20,28 +21,32 @@
   --btn-primary: #238636;
   --btn-hover: #2ea043;
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --bg-primary-rgb: 13, 17, 23;
 }
 
 /* Global Styling */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
     Helvetica, Arial, sans-serif;
-  background-color: var(--bg-secondary);
+  background-color: transparent;
   color: var(--text-primary);
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: color 0.3s ease;
+  position: relative;
+  overflow-x: hidden;
 }
 
 .container {
   max-width: 800px;
   margin: 50px auto;
   padding: 20px;
-  background-color: var(--bg-primary);
+  backdrop-filter: blur(8px);
+  background-color: rgba(var(--bg-primary-rgb), 0.8);
   border-radius: 6px;
   border: 1px solid var(--border-color);
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 /* Theme Toggle Button */
@@ -172,4 +177,125 @@ button:hover {
 /* Ensure page is scrollable */
 body {
   overflow-y: scroll;
+}
+
+/* Background Effects */
+.background-pattern {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.4;
+  background: radial-gradient(
+      circle at 0% 0%,
+      var(--bg-secondary) 4px,
+      transparent 0
+    ),
+    radial-gradient(circle at 100% 0%, var(--bg-secondary) 4px, transparent 0),
+    radial-gradient(circle at 100% 100%, var(--bg-secondary) 4px, transparent 0),
+    radial-gradient(circle at 0% 100%, var(--bg-secondary) 4px, transparent 0);
+  background-size: 50px 50px;
+  background-position: 0 0, 0 0, 0 0, 0 0;
+  animation: patternMove 60s linear infinite;
+}
+
+.gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -2;
+  background: linear-gradient(
+    135deg,
+    var(--bg-primary) 0%,
+    var(--bg-secondary) 100%
+  );
+}
+
+/* Light mode gradient overlay */
+.gradient-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.7;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+}
+
+[data-theme="dark"] .gradient-overlay {
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(100, 100, 255, 0.05) 0%,
+    rgba(100, 100, 255, 0) 70%
+  );
+}
+
+@keyframes patternMove {
+  0% {
+    background-position: 0 0, 0 0, 0 0, 0 0;
+  }
+  100% {
+    background-position: 100px 100px, 100px 100px, 100px 100px, 100px 100px;
+  }
+}
+
+/* Update the float animation */
+@keyframes float {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.1;
+  }
+  25% {
+    transform: translate(100vw, 50vh) rotate(90deg);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(50vw, 100vh) rotate(180deg);
+    opacity: 0.1;
+  }
+  75% {
+    transform: translate(-50vw, 50vh) rotate(270deg);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+    opacity: 0.1;
+  }
+}
+
+/* Update Octocat styles for better visibility */
+.octocat {
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.2;
+  animation: float 30s ease-in-out infinite; /* Increased duration for smoother movement */
+}
+
+.octocat:nth-child(2) {
+  animation-delay: -10s;
+  animation-duration: 35s;
+}
+
+.octocat:nth-child(3) {
+  animation-delay: -20s;
+  animation-duration: 40s;
+}
+
+[data-theme="dark"] .octocat {
+  filter: invert(1);
 }
