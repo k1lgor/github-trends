@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-const GitHubAPIURL = "https://api.github.com/search/repositories"
+var GitHubAPIURL = "https://api.github.com/search/repositories"
 
 type Repository struct {
 	Name        string `json:"name"`
