@@ -1,3 +1,17 @@
+function toggleTheme() {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute("data-theme");
+  const newTheme = currentTheme === "dark" ? "light" : "dark";
+  html.setAttribute("data-theme", newTheme);
+
+  // Update theme icon
+  const themeIcon = document.querySelector(".theme-icon");
+  themeIcon.textContent = newTheme === "dark" ? "🌙" : "🌞";
+
+  // Save preference
+  localStorage.setItem("theme", newTheme);
+}
+
 // Initialize date elements with current date
 function initializeDateFields() {
   const now = new Date();
@@ -61,8 +75,20 @@ async function fetchRepositories() {
   }
 }
 
+function initializeTheme() {
+  const savedTheme =
+    localStorage.getItem("theme") ||
+    (window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light");
+  document.documentElement.setAttribute("data-theme", savedTheme);
+  document.querySelector(".theme-icon").textContent =
+    savedTheme === "dark" ? "🌙" : "🌞";
+}
 // Initialize everything when the page loads
 function initialize() {
+  // Initialize theme
+  initializeTheme();
   // Set current date fields
   initializeDateFields();
 
